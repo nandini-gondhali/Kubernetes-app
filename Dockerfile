@@ -1,25 +1,29 @@
-FROM centos:latest
+# Step 1: Use a base image with Node.js
+FROM node:18 AS build
 
-# Install necessary packages
-RUN yum install -y httpd zip unzip
+# Step 2: Set the working directory
+WORKDIR /app
 
-# Add the zip file to the specified location
-ADD https://www.free-css.com/free-css-templates/page295/antique-cafe /var/www/html/
+# Step 3: Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Set the working directory
-WORKDIR /var/www/html/
+# Step 4: Install dependencies
+RUN npm install
 
-# Unzip the contents of the zip file
-RUN unzip photogenic.zip
+# Step 5: Copy the rest of the application files
+COPY . .
 
-# Corrected the folder name "photogeneic" to "photogenic"
-RUN cp -rvf photogenic/* . 
+# Step 6: Build the application
+RUN npm run build
 
-# Clean up the unnecessary files
-RUN rm -rf photogenic photogenic.zip
+# Step 7: Use a lightweight server for serving the built app
+FROM nginx:alpine
 
-# Command to run the HTTP server in the foreground
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+# Step 8: Copy built files from the previous stage
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Expose port 80
+# Step 9: Expose port 80
 EXPOSE 80
+
+# Step 10: Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]
