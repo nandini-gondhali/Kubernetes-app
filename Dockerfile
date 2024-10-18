@@ -1,12 +1,10 @@
 FROM centos:latest
 
-MAINTAINER nandinigondhali09@gmail.com
-
 # Install necessary packages
 RUN yum install -y httpd zip unzip
 
 # Add the zip file to the specified location
-ADD https://www.free-css.com/assets/files/free-css-templates/download/pae254/photogenic.zip /var/www/html/
+ADD https://www.free-css.com/free-css-templates/page295/antique-cafe /var/www/html/
 
 # Set the working directory
 WORKDIR /var/www/html/
