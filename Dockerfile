@@ -13,6 +13,9 @@ RUN npm install
 # Step 5: Copy the rest of the application files
 COPY . .
 
+# Optional: Debugging step
+RUN ls -la /app
+
 # Step 6: Build the application
 RUN npm run build
 
